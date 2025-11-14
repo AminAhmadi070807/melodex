@@ -6,6 +6,7 @@ const followModel = require('../follow/follow.model')
 const likeModel = require('../like/like.post.model')
 const userTagsModel = require('../userTags/post/userTags.post.model')
 const commentsModel = require('../comments/comment.post.model')
+const bookmarksModel = require('../bookmark/bookmark.post.model')
 const fileDeleter = require("../../../utils/delete.file.util");
 const response = require("../../../helpers/response.helper");
 const formatTimeAgo = require('../../../utils/time.util')
@@ -125,9 +126,11 @@ module.exports.getOne = async (req, res, next) => {
 
         const numberOfCommentPost = await commentsModel.countDocuments({ post: id, isAnswer: false })
 
+        const numberOfBookmarkPost = await bookmarksModel.countDocuments({ post: id })
+
         const timeAgo = formatTimeAgo(post.createdAt, post.updatedAt)
 
-        return response(res, 200, null, { post: { ...post, ...timeAgo, likes : numberOfLikePost, numberOfCommentPost , user: { ...post.user, settings: undefined } } })
+        return response(res, 200, null, { post: { ...post, ...timeAgo, likes : numberOfLikePost, numberOfCommentPost, numberOfBookmarkPost , user: { ...post.user, settings: undefined } } })
     }
     catch (error) {
         next(error);
