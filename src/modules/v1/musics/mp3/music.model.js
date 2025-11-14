@@ -3,12 +3,23 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      max: 60,
+    },
     route: {
         type: String,
         required: true,
         trim: true,
     },
-    poster: [{
+    poster: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    covers: [{
         type: String,
         required: true,
         trim: true,
@@ -47,6 +58,30 @@ const schema = new mongoose.Schema({
         required: true,
         default: false,
     },
+    artist: [{
+        type: String,
+        required: true,
+        trim: true,
+    }],
+    releaseDate: {
+        type: Date,
+        required: true,
+    },
+    language: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    album: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Album",
+        required: false,
+    }, // TODO add model to project
+    playlist: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Playlist",
+        required: false,
+    } // TODO add playlist model to project
 }, { timestamps: true })
 
 module.exports = mongoose.model("mp4Music", schema)
