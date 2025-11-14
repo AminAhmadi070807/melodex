@@ -18,6 +18,7 @@ const followRouter = require('./src/modules/v1/follow/follow.route')
 const postRouter = require('./src/modules/v1/posts/post.route')
 const likeRouter = require('./src/modules/v1/like/like.route')
 const commentRouter = require('./src/modules/v1/comments/comment.route')
+const bookmarkRouter = require('./src/modules/v1/bookmark/bookmark.route')
 
 const app = express()
 
@@ -41,6 +42,7 @@ app.use('/api/v1/follows', followRouter)
 app.use('/api/v1/posts', postRouter)
 app.use('/api/v1/likes', likeRouter)
 app.use('/api/v1/comments', commentRouter)
+app.use('/api/v1/bookmarks', bookmarkRouter)
 
 app.use('/api/docs', docsRouter)
 

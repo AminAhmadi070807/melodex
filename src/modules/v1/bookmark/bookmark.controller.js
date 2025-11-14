@@ -15,14 +15,17 @@ module.exports.bookmarkPost = async (req, res, next) => {
 
         const isExistUserBookmark = await postBookmark.findOne({ user: user._id, post: id }).lean()
 
-        if (isExistUserBookmark) await postBookmark.deleteOne({ _id: isExistUserBookmark._id })
+        if (isExistUserBookmark) {
+            await postBookmark.deleteOne({_id: isExistUserBookmark._id})
+            return response(res, 200, "post removed from bookmark")
+        }
 
         await postBookmark.create({
             post: id,
             user: user._id
         })
 
-        return response(res, 200)
+        return response(res, 200, "post bookmarked successfully")
     }
     catch (error) {
         next(error)
