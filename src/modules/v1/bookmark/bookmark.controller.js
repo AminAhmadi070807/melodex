@@ -55,7 +55,7 @@ module.exports.userBookmarkPost = async (req, res, next) => {
 
         const user = req.user;
 
-        const bookmarks = await postBookmark.find({ user: user._id }, 'post').populate('post').populate({ path: "post", populate: { path: "user", model: "User", select: "fullName username profile" } }).limit(+page * +limit).lean()
+        const bookmarks = await postBookmark.find({ user: user._id }, 'post').sort({ _id: -1 }).populate('post').populate({ path: "post", populate: { path: "user", model: "User", select: "fullName username profile" } }).limit(+page * +limit).lean()
 
         const bookmarksArray = await timeFormatSetter(bookmarks)
 
