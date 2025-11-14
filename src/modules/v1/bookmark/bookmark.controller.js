@@ -3,6 +3,23 @@
 const postBookmark = require('./bookmark.post.model')
 const postModel = require('../posts/post.model')
 const response = require('../../../helpers/response.helper')
+const timeFormat = require('../../../utils/time.util')
+
+const timeFormatSetter = async (bookmarks) => {
+    const bookmarkArray = []
+
+    for (const bookmark of bookmarks) {
+        const timeAgo = await timeFormat(bookmark.post.createdAt, bookmark.post.createdAt);
+
+        bookmarkArray.push({
+            ...bookmark.post,
+            ...timeAgo
+
+        });
+    }
+
+    return bookmarkArray;
+}
 
 module.exports.bookmarkPost = async (req, res, next) => {
     try {
@@ -26,6 +43,23 @@ module.exports.bookmarkPost = async (req, res, next) => {
         })
 
         return response(res, 200, "post bookmarked successfully")
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+module.exports.userBookmarkPost = async (req, res, next) => {
+    try {
+        const { page = 1, limit = 25 } = req.query
+
+        const user = req.user;
+
+        const bookmarks = await postBookmark.find({ user: user._id }, 'post').populate('post').populate({ path: "post", populate: { path: "user", model: "User", select: "fullName username profile" } }).limit(+page * +limit).lean()
+
+        const bookmarksArray = await timeFormatSetter(bookmarks)
+
+        return response(res, 200, "post bookmarks successfully", { bookmarks: bookmarksArray })
     }
     catch (error) {
         next(error)
