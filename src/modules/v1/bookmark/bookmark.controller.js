@@ -4,6 +4,7 @@ const postBookmark = require('./bookmark.post.model')
 const postModel = require('../posts/post.model')
 const response = require('../../../helpers/response.helper')
 const timeFormat = require('../../../utils/time.util')
+const userTagsPostModel = require("../userTags/post/userTags.post.model");
 
 const timeFormatSetter = async (bookmarks) => {
     const bookmarkArray = []
@@ -35,6 +36,18 @@ module.exports.bookmarkPost = async (req, res, next) => {
         if (isExistUserBookmark) {
             await postBookmark.deleteOne({_id: isExistUserBookmark._id})
             return response(res, 200, "post removed from bookmark")
+        }
+
+        for (const tag of isExistPost.tags) {
+            await userTagsPostModel.findOneAndUpdate({ user: user._id, tag}, {
+                    user: user._id,
+                    tag,
+                    $inc: {
+                        score: 5
+                    }
+                },
+                {new: true, upsert: true}
+            )
         }
 
         await postBookmark.create({
