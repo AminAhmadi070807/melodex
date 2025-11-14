@@ -1,7 +1,7 @@
 "use strict";
 
 const likeModel = require("./like.post.model");
-const tagsModel = require("../tags/tags.model");
+const tagsModel = require("../tags/tags.post.model");
 const userTagsModel = require("../userTags/post/userTags.post.model");
 const response = require("../../../helpers/response.helper");
 

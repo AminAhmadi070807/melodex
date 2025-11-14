@@ -1,7 +1,7 @@
 "use strict";
 
 const postModel = require('./post.model')
-const tagsModel = require('../tags/tags.model')
+const tagsModel = require('../tags/tags.post.model')
 const followModel = require('../follow/follow.model')
 const likeModel = require('../like/like.post.model')
 const userTagsModel = require('../userTags/post/userTags.post.model')
@@ -24,7 +24,9 @@ module.exports.upload = async (req, res, next) => {
 
         if (posts.length === 0) return response(res, 422, "place first upload a post")
 
-        req.body.tags = req.body.tags.match(/#\w+/g)
+        req.body.tags = req.body.tags.match(/#([\p{L}\p{N}_]+)/gu)
+
+        console.log(req.body.tags)
 
         const upload = await postModel.create({
             user: user._id,

@@ -84,4 +84,4 @@ const schema = new mongoose.Schema({
     } // TODO add playlist model to project
 }, { timestamps: true })
 
-module.exports = mongoose.model("mp4Music", schema)
+module.exports = mongoose.model("Mp3Music", schema)
