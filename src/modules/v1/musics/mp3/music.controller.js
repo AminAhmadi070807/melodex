@@ -173,7 +173,7 @@ module.exports.update = async (req, res, next) => {
     }
 }
 
-// TODO show number of comments and bookmarked
+// TODO show number of bookmarked
 module.exports.getOne = async (req, res, next) => {
     try {
         const { id } = req.params;
