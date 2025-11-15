@@ -7,6 +7,7 @@ const { createPlanSchema, updatePlanSchema } = require('./../modules/v1/plans/pl
 const banSchema = require('../modules/v1/bans/ban.schema')
 const postSchema = require('../modules/v1/posts/post.schema')
 const { commentPostSchema } = require('../modules/v1/comments/comment.schema')
+const { uploadMp3MusicSchema } = require('../modules/v1/musics/music.schema')
 
 module.exports.authPhoneValidator = async (req, res, next) => {
     try {
@@ -121,6 +122,17 @@ module.exports.postValidator = async (req, res, next) => {
 module.exports.commentValidator = async (req, res, next) => {
     try {
         await commentPostSchema.validateAsync({ ...req.body })
+
+        return next()
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+module.exports.uploadMp3MusicValidator = async (req, res, next) => {
+    try {
+        await uploadMp3MusicSchema.validateAsync({ ...req.body })
 
         return next()
     }

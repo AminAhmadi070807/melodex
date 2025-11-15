@@ -4,7 +4,7 @@ const postBookmark = require('./bookmark.post.model')
 const postModel = require('../posts/post.model')
 const response = require('../../../helpers/response.helper')
 const timeFormat = require('../../../utils/time.util')
-const userTagsPostModel = require("../userTags/post/userTags.post.model");
+const userTagsPostModel = require("../userTags/userTags.model");
 
 const timeFormatSetter = async (bookmarks) => {
     const bookmarkArray = []
