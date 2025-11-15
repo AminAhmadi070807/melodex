@@ -18,4 +18,6 @@ router.route('/').post(authGuard, uploader.fields([
     { name: 'covers', maxCount: 20 }
 ]),validator.uploadMp3MusicValidator, controller.upload)
 
+router.route('/:id').delete(authGuard, idGuard, controller.remove)
+
 module.exports = router

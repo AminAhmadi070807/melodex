@@ -7,9 +7,9 @@ const tagsModel = require("../../tags/tags.mp3.music.model");
 const fileDeleter = require("../../../../utils/delete.file.util");
 
 const allowedFormats = {
-    music: ['.mp3', '.wav', '.ogg'],          // فرمت‌های صوتی
-    poster: ['.jpg', '.png', '.jpeg', '.webp'], // فرمت تصویر پوستر
-    covers: ['.jpg', '.jpeg', '.png', '.webp']  // فرمت تصاویر کاور
+    music: ['.mp3', '.wav', '.ogg'],
+    poster: ['.jpg', '.png', '.jpeg', '.webp'],
+    covers: ['.jpg', '.jpeg', '.png', '.webp']
 };
 
 const validateFiles = async (files, allowed, folder, req) => {
@@ -37,6 +37,7 @@ const deleteFileHandler = async (req) => {
     }
 }
 
+
 module.exports.upload = async (req, res, next) => {
     try {
         const user = req.user;
@@ -48,8 +49,8 @@ module.exports.upload = async (req, res, next) => {
             return response(res, 400, "upload music required");
         }
 
-        req.body.poster = posters?.[0].filename.trim();
-        req.body.route = musics?.[0]?.filename.trim()
+        req.body.poster = '/uploads' + '/posters/' + posters?.[0].filename.replace(/^\s+$/g, '');
+        req.body.route = '/uploads' + '/musics/' + musics?.[0]?.filename.replace(/^\s+$/g, '')
         req.body.tags = req.body.tags.match(/#([\p{L}\p{N}_]+)/gu)
 
         let check = await validateFiles(musics, allowedFormats.music, "musics", req);
@@ -62,7 +63,7 @@ module.exports.upload = async (req, res, next) => {
         if (!check.ok) return response(res, 422, check.message);
 
         const coversArray = []
-        for (const file of covers) coversArray.push(file.filename.trim())
+        for (const file of covers) coversArray.push(`/uploads/covers/${file.filename.replace(/^\s+$/g, '')}`)
 
         const upload = await musicModel.create({
             ...req.body,
@@ -80,6 +81,28 @@ module.exports.upload = async (req, res, next) => {
         }
 
         return response(res, 201, "Create new music successfully")
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+module.exports.remove = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const { id } = req.params;
+
+        const accessToRemoveMusic = await musicModel.findOne({ _id: id, user: user._id }).lean()
+
+        if (!accessToRemoveMusic || !user.role.includes("CONTENT-MODERATOR")) return response(res, 403, "You have no rigth to delete this music")
+
+        const isExistMusic = await musicModel.findByIdAndDelete(id, "route covers poster").lean()
+
+        await fileDeleter('public', isExistMusic.route)
+        await fileDeleter('public', isExistMusic.poster)
+        for (const cover of isExistMusic.covers) await fileDeleter('public', cover)
+
+        return response(res, 200, "Deleting music successfully")
     }
     catch (error) {
         next(error)
