@@ -23,7 +23,6 @@ const mp3MusicRouter = require('./src/modules/v1/musics/mp3/music.route')
 
 const app = express()
 
-
 //* middleware
 app.use(express.static('public'))
 app.use(cors())
