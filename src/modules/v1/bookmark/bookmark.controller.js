@@ -1,9 +1,7 @@
 "use strict"
 
-const postBookmark = require('./bookmark.post.model')
-const musicBookmark = require('./bookmark.music.model')
+const postBookmark = require('./bookmark.model')
 const postModel = require('../posts/post.model')
-const musicModel = require('../musics/mp3/music.model')
 const response = require('../../../helpers/response.helper')
 const timeFormat = require('../../../utils/time.util')
 const userTagsModel = require("../userTags/userTags.model");
@@ -71,63 +69,6 @@ module.exports.userBookmarkPost = async (req, res, next) => {
         const user = req.user;
 
         const bookmarks = await postBookmark.find({ user: user._id }, 'post').sort({ _id: -1 }).populate('post').populate({ path: "post", populate: { path: "user", model: "User", select: "fullName username profile" } }).limit(+page * +limit).lean()
-
-        const bookmarksArray = await timeFormatSetter(bookmarks)
-
-        return response(res, 200, "post bookmarks successfully", { bookmarks: bookmarksArray })
-    }
-    catch (error) {
-        next(error)
-    }
-}
-
-module.exports.bookmarkMusic = async (req, res, next) => {
-    try {
-        const user = req.user;
-        const { id } = req.params;
-
-        const isExistPost = await musicModel.findById(id).lean()
-
-        if (!isExistPost) return response(res, 404, "music not found. or has already been removed.")
-
-        const isExistUserBookmark = await musicBookmark.findOne({ user: user._id, music: id }).lean()
-
-        if (isExistUserBookmark) {
-            await musicBookmark.deleteOne({_id: isExistUserBookmark._id})
-            return response(res, 200, "music removed from bookmark")
-        }
-
-        for (const tag of isExistPost.tags) {
-            await userTagsModel.findOneAndUpdate({ user: user._id, tag}, {
-                    user: user._id,
-                    tag,
-                    $inc: {
-                        score: 5
-                    }
-                },
-                {new: true, upsert: true}
-            )
-        }
-
-        await musicBookmark.create({
-            music: id,
-            user: user._id
-        })
-
-        return response(res, 200, "music bookmarked successfully")
-    }
-    catch (error) {
-        next(error)
-    }
-}
-
-module.exports.userBookmarkMusic = async (req, res, next) => {
-    try {
-        const { page = 1, limit = 25 } = req.query
-
-        const user = req.user;
-
-        const bookmarks = await musicBookmark.find({ user: user._id }, 'music').sort({ _id: -1 }).populate('music').populate({ path: "music", populate: { path: "user", model: "User", select: "fullName username profile" } }).limit(+page * +limit).lean()
 
         const bookmarksArray = await timeFormatSetter(bookmarks)
 

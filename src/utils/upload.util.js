@@ -15,6 +15,8 @@ module.exports = (fileAddress) => {
                         return callback(null, path.resolve(__dirname, '..', '..', 'public', 'uploads', 'posters'));
                     case 'covers':
                         return callback(null, path.resolve(__dirname, '..', '..', 'public', 'uploads', 'covers'));
+                    case 'videos':
+                        return callback(null, path.resolve(__dirname, '..', '..', 'public', 'uploads', 'videos'));
                     default:
                         return callback(new Error("Unexpected field"));
                 }

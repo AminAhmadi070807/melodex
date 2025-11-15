@@ -10,7 +10,4 @@ const idGuard = require('../../../middlewares/guard/id.guard')
 router.route('/post').get(authGuard, controller.userBookmarkPost)
 router.route('/post/:id').post(authGuard, idGuard, controller.bookmarkPost)
 
-router.route('/music').get(authGuard, controller.userBookmarkPost)
-router.route('/music/:id').post(authGuard, idGuard, controller.bookmarkMusic)
-
 module.exports = router
