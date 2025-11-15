@@ -9,6 +9,7 @@ const followModel = require("../../follow/follow.model");
 const userTagsModel = require("../../userTags/userTags.model");
 const likeModel = require('../../like/like.music.model')
 const commentsModel = require('../../comments/comment.music.model')
+const bookmarkModel = require('../../bookmark/bookmark.music.model')
 const formatTimeAgo = require('../../../../utils/time.util')
 
 const allowedFormats = {
@@ -191,10 +192,11 @@ module.exports.getOne = async (req, res, next) => {
 
         const numberOfLikes = await likeModel.countDocuments({ music: id })
         const numberOfComments = await commentsModel.countDocuments({ music: id})
+        const numberOfBookmarks = await bookmarkModel.countDocuments({ music: id })
 
         const timeAgo = await formatTimeAgo(music.createdAt, music.updatedAt)
 
-        return response(res, 200, null, { music: { ...music, ...timeAgo, numberOfLikes, numberOfComments , user: { ...music.user, settings: undefined, role: undefined } } })
+        return response(res, 200, null, { music: { ...music, ...timeAgo, numberOfLikes, numberOfComments, numberOfBookmarks , user: { ...music.user, settings: undefined, role: undefined } } })
     }
     catch (error) {
         next(error)
