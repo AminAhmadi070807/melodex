@@ -60,15 +60,11 @@ module.exports.remove = async (req, res, next) => {
 
         if (remove.routes.length) for (const file of remove.routes) await fileDeleter('public', file);
 
-<<<<<<< HEAD
         await likeModel.deleteMany({ post: id })
         await commentsModel.deleteMany({ post: id })
         await bookmarksModel.deleteMany({ post: id })
 
         return response(res, 200, "remove post successfully")
-=======
-        return response(res, 200, "remove post s    uccessfully")
->>>>>>> musicFeature
     }
     catch (error) {
         next(error);
