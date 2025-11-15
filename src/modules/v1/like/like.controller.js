@@ -2,7 +2,7 @@
 
 const likeModel = require("./like.post.model");
 const tagsModel = require("../tags/tags.post.model");
-const userTagsModel = require("../userTags/post/userTags.post.model");
+const userTagsModel = require("../userTags/userTags.model");
 const response = require("../../../helpers/response.helper");
 
 module.exports.likePost = async (req, res, next) => {

@@ -4,7 +4,7 @@ const postModel = require('./post.model')
 const tagsModel = require('../tags/tags.post.model')
 const followModel = require('../follow/follow.model')
 const likeModel = require('../like/like.post.model')
-const userTagsModel = require('../userTags/post/userTags.post.model')
+const userTagsModel = require('../userTags/userTags.model')
 const commentsModel = require('../comments/comment.post.model')
 const bookmarksModel = require('../bookmark/bookmark.post.model')
 const fileDeleter = require("../../../utils/delete.file.util");
@@ -25,8 +25,6 @@ module.exports.upload = async (req, res, next) => {
         if (posts.length === 0) return response(res, 422, "place first upload a post")
 
         req.body.tags = req.body.tags.match(/#([\p{L}\p{N}_]+)/gu)
-
-        console.log(req.body.tags)
 
         const upload = await postModel.create({
             user: user._id,
@@ -62,7 +60,7 @@ module.exports.remove = async (req, res, next) => {
 
         if (remove.routes.length) for (const file of remove.routes) await fileDeleter('public', file);
 
-        return response(res, 200, "remove post successfully")
+        return response(res, 200, "remove post s    uccessfully")
     }
     catch (error) {
         next(error);

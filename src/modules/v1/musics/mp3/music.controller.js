@@ -6,11 +6,12 @@ const response = require("../../../../helpers/response.helper");
 const tagsModel = require("../../tags/tags.mp3.music.model");
 const fileDeleter = require("../../../../utils/delete.file.util");
 const followModel = require("../../follow/follow.model");
+const userTagsModel = require("../../userTags/userTags.model");
 
 const allowedFormats = {
     music: ['.mp3', '.wav', '.ogg'],
-    poster: ['.jpg', '.png', '.jpeg', '.webp'],
-    covers: ['.jpg', '.jpeg', '.png', '.webp']
+    poster: ['.jpg', '.png', '.jpeg', '.jfif', '.webp'],
+    covers: ['.jpg', '.jpeg', '.jfif', '.png', '.webp']
 };
 
 const validateFiles = async (files, allowed, folder, req) => {
@@ -45,10 +46,9 @@ module.exports.upload = async (req, res, next) => {
 
         const { musics, posters, covers } = req.files
 
-        if (!musics) {
-            console.log(musics)
+        if (!musics || !posters) {
             await deleteFileHandler(req);
-            return response(res, 400, "upload music required");
+            return response(res, 400, "upload music & poster required");
         }
 
         req.body.poster = '/uploads' + '/posters/' + posters?.[0].filename.replace(/^\s+$/g, '');
@@ -65,7 +65,7 @@ module.exports.upload = async (req, res, next) => {
         if (!check.ok) return response(res, 422, check.message);
 
         const coversArray = []
-        for (const file of covers) coversArray.push(`/uploads/covers/${file.filename.replace(/^\s+$/g, '')}`)
+        if (covers) for (const file of covers) coversArray.push(`/uploads/covers/${file.filename.replace(/^\s+$/g, '')}`)
 
         const upload = await musicModel.create({
             ...req.body,
@@ -186,9 +186,24 @@ module.exports.getOne = async (req, res, next) => {
             if (!isFollowed) return response(res, 403, "This page is private. you don't follow this user.")
         }
 
-
-
         return response(res, 200, null, music)
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+module.exports.getReels = async (req, res, next) => {
+    try {
+        const user = req.user;
+
+        const userTags = await userTagsModel.find({ user: user._id }, 'tag').sort({ score: -1 }).lean()
+
+        const userTagsArray = userTags.map(tag => tag.tag)
+
+        const musics = await musicModel.find({ tags: { $in : userTagsArray } }).sort({ _id: -1 }).select("_id").lean()
+
+        return response(res, 200, null, musics);
     }
     catch (error) {
         next(error)

@@ -2,7 +2,7 @@
 
 const commentPostModel = require('./comment.post.model')
 const postModel = require('./../posts/post.model')
-const userTagsPostModel = require('./../userTags/post/userTags.post.model')
+const userTagsPostModel = require('../userTags/userTags.model')
 const {isValidObjectId} = require("mongoose");
 const response = require('../../../helpers/response.helper')
 const timeFormat = require('../../../utils/time.util')
