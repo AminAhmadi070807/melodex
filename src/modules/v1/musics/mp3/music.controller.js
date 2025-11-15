@@ -5,6 +5,7 @@ const musicModel = require('./music.model')
 const response = require("../../../../helpers/response.helper");
 const tagsModel = require("../../tags/tags.mp3.music.model");
 const fileDeleter = require("../../../../utils/delete.file.util");
+const followModel = require("../../follow/follow.model");
 
 const allowedFormats = {
     music: ['.mp3', '.wav', '.ogg'],
@@ -88,6 +89,7 @@ module.exports.upload = async (req, res, next) => {
     }
 }
 
+// TODO remove user likes
 module.exports.remove = async (req, res, next) => {
     try {
         const user = req.user;
@@ -110,6 +112,7 @@ module.exports.remove = async (req, res, next) => {
     }
 }
 
+// TODO update user like
 module.exports.update = async (req, res, next) => {
     try {
         const user = req.user;
@@ -161,6 +164,31 @@ module.exports.update = async (req, res, next) => {
         }
 
         return response(res, 201, "Update music successfully")
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+// TODO show number of like and comments and bookmarked
+module.exports.getOne = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const user = req.user;
+
+        const music = await musicModel.findById(id).populate("user", '-role -password -phone').lean()
+
+        if (!music) return response(res, 404, "music not found. or has already been removed.")
+
+        if (music.user.settings?.Private === "PRIVATE" && music.user._id.toString() !== user._id.toString()) {
+            const isFollowed = await followModel.findOne({ follower: music.user._id, following: user._id }).lean()
+
+            if (!isFollowed) return response(res, 403, "This page is private. you don't follow this user.")
+        }
+
+
+
+        return response(res, 200, null, music)
     }
     catch (error) {
         next(error)

@@ -25,5 +25,6 @@ router.route('/:id')
         { name: 'posters', maxCount: 1 },
         { name: 'covers', maxCount: 20 }
     ]),validator.uploadMp3MusicValidator, controller.update)
+    .get(authGuard, idGuard, controller.getOne)
 
 module.exports = router
