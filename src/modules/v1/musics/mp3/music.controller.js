@@ -8,7 +8,7 @@ const fileDeleter = require("../../../../utils/delete.file.util");
 const followModel = require("../../follow/follow.model");
 const userTagsModel = require("../../userTags/userTags.model");
 const likeModel = require('../../like/like.music.model')
-const formatTimeAgo = require('../../../utils/time.util')
+const formatTimeAgo = require('../../../../utils/time.util')
 
 const allowedFormats = {
     music: ['.mp3', '.wav', '.ogg'],
