@@ -3,6 +3,6 @@
 const Joi = require("joi");
 
 module.exports.commentPostSchema = Joi.object().keys({
-    post: Joi.string().optional(),
+    id: Joi.string().optional(),
     content: Joi.string().required(),
 })
