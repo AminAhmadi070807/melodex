@@ -45,6 +45,7 @@ module.exports.upload = async (req, res, next) => {
         const { musics, posters, covers } = req.files
 
         if (!musics) {
+            console.log(musics)
             await deleteFileHandler(req);
             return response(res, 400, "upload music required");
         }
@@ -96,7 +97,7 @@ module.exports.remove = async (req, res, next) => {
 
         if (!accessToRemoveMusic || !user.role.includes("CONTENT-MODERATOR")) return response(res, 403, "You have no right to delete this music")
 
-        const isExistMusic = await musicModel.findByIdAndDelete(id, "route covers poster").lean()
+        const isExistMusic = await musicModel.findByIdAndDelete(id).select("route covers poster").lean()
 
         await fileDeleter('public', isExistMusic.route)
         await fileDeleter('public', isExistMusic.poster)
@@ -124,7 +125,7 @@ module.exports.update = async (req, res, next) => {
         req.body.route = '/uploads' + '/musics/' + musics?.[0]?.filename.replace(/^\s+$/g, '')
         req.body.tags = req.body.tags.match(/#([\p{L}\p{N}_]+)/gu)
 
-        const removeMusic = await musicModel.findOneAndDelete({ _id: id, user: user._id }).lean()
+        const removeMusic = await musicModel.findOneAndDelete({ _id: id, user: user._id }).select("route covers poster").lean()
 
         if (!removeMusic || !user.role.includes("CONTENT-MODERATOR")) return response(res, 403, "You have no right to delete this music")
 
@@ -159,7 +160,7 @@ module.exports.update = async (req, res, next) => {
             }, { new: true, upsert: true })
         }
 
-        return response(res, 201, "Create new music successfully")
+        return response(res, 201, "Update music successfully")
     }
     catch (error) {
         next(error)
