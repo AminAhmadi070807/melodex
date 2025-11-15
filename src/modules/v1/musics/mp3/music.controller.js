@@ -7,6 +7,8 @@ const tagsModel = require("../../tags/tags.mp3.music.model");
 const fileDeleter = require("../../../../utils/delete.file.util");
 const followModel = require("../../follow/follow.model");
 const userTagsModel = require("../../userTags/userTags.model");
+const likeModel = require('../../like/like.music.model')
+const formatTimeAgo = require('../../../utils/time.util')
 
 const allowedFormats = {
     music: ['.mp3', '.wav', '.ogg'],
@@ -186,7 +188,11 @@ module.exports.getOne = async (req, res, next) => {
             if (!isFollowed) return response(res, 403, "This page is private. you don't follow this user.")
         }
 
-        return response(res, 200, null, music)
+        const numberOfLikes = await likeModel.countDocuments({ music: id })
+
+        const timeAgo = await formatTimeAgo(music.createdAt, music.updatedAt)
+
+        return response(res, 200, null, { music: { ...music, ...timeAgo, numberOfLikes , user: { ...music.user, settings: undefined, role: undefined } } })
     }
     catch (error) {
         next(error)
