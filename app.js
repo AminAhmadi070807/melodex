@@ -42,7 +42,6 @@ app.use('/api/v1/posts', postRouter)
 app.use('/api/v1/likes', likeRouter)
 app.use('/api/v1/comments', commentRouter)
 app.use('/api/v1/bookmarks', bookmarkRouter)
-
 app.use('/api/docs', docsRouter)
 
 app.use((req, res, next) => res.status(404).json({ status: 404, message: "Api not found" }))
