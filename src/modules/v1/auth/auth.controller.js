@@ -130,7 +130,7 @@ module.exports.refresh = async (req, res, next) => {
 
         const isBanned = await banModel.findOne({ phone: user.phone }).lean()
 
-        if (isBanned) return response(res, 403, "user id banned.")
+        if (isBanned) return response(res, 403, "user already banned.")
 
         const isExistToken = await bcrypt.compare(refreshToken, user.token)
 

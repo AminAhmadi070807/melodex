@@ -1,28 +1,16 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "< SabzLearn - Shop API 💚 >",
-    "description": "",
+    "title": "Amin Ahmadi, Melodex APIs",
+    "description": "this project a social media project with feature(post, comment, story, subscription payment, Post display decision algorithm, like, bookmark, search, ...)",
     "version": "1.0.0"
-  },
-
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "description": "User token for authentication: **Bearer [user_token]**"
-      }
-    }
   },
 
   "paths": {
     "/api/v1/auth/send": {
       "post": {
         "tags": ["Auth 🔐"],
-        "summary": "Send OTP to validate phone number - Default OTP: 1111",
-        "description": "Default OTP: 1111",
+        "summary": "Send OTP to validate phone number",
         "requestBody": {
           "required": true,
           "content": {
@@ -32,7 +20,7 @@
                 "properties": {
                   "phone": {
                     "type": "string",
-                    "example": "09123334444"
+                    "example": "0914...6020"
                   }
                 }
               }
@@ -41,10 +29,16 @@
         },
         "responses": {
           "200": {
-            "description": "OTP sent"
+            "description": "Send otp code to phone number successfully"
           },
-          "400": {
+          "403": {
+            "description": "phone number is banned"
+          },
+          "422": {
             "description": "phone number is not valid"
+          },
+          "409": {
+            "description": "otp code already to phone number send"
           }
         }
       }
@@ -52,8 +46,7 @@
     "/api/v1/auth/verify": {
       "post": {
         "tags": ["Auth 🔐"],
-        "summary": "verify the phone number and login/register",
-        "description": "",
+        "summary": "Verify otp code",
         "requestBody": {
           "required": true,
           "content": {
@@ -63,15 +56,11 @@
                 "properties": {
                   "phone": {
                     "type": "string",
-                    "example": "09123334444"
+                    "example": "0914...6020"
                   },
-                  "otp": {
-                    "type": "string",
-                    "example": "1111"
-                  },
-                  "isSeller": {
-                    "type": "boolean",
-                    "example": false
+                  "code": {
+                    "type": "number",
+                    "example": "556558"
                   }
                 }
               }
@@ -80,57 +69,33 @@
         },
         "responses": {
           "200": {
-            "description": "user logged in successfully"
+            "description": "You have successfully logged in."
           },
           "201": {
-            "description": "user registered successfully"
+            "description": "You have successfully registered."
           },
-          "400": {
-            "description": "Invalid OTP / Invalid body data"
+          "404": {
+            "description": "otp code to phone number not found."
           }
         }
       }
     },
-    "/api/v1/auth/me": {
-      "get": {
-        "tags": ["Auth 🔐"],
-        "summary": "Get user's data with token",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "user data will be returned"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
-    "/api/v1/category/": {
-      "get": {
-        "tags": ["Category 📁"],
-        "summary": "Get all categories",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "All categories will be returned"
-          }
-        }
-      },
+    "/api/v1/auth/refresh": {
       "post": {
-        "tags": ["Category 📁"],
-        "summary": "Create a new category",
-        "description": "",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "tags": ["Auth 🔐"],
+        "summary": "Create new refresh token",
+        "responses": {
+          "401": {"description": "User not authorized"},
+          "403": {"description": "User already banned"},
+          "409": {"description": "Refresh token is not acceptable"},
+          "200": { "description": "new token generated successfully" }
+        }
+      }
+    },
+    "/api/v1/users/": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user information",
         "requestBody": {
           "required": true,
           "content": {
@@ -138,43 +103,25 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "title": {
-                    "example": "Title Text"
-                  },
-                  "slug": {
-                    "example": "title-slug-text"
-                  },
-                  "parent": {
-                    "example": "parentCategoryId"
-                  },
-                  "description": {
-                    "example": "Description about category"
-                  },
-                  "icon": {
+                  "bio": {
                     "type": "string",
-                    "format": "binary",
-                    "description": "Select image files to upload"
+                    "example": "Within me, there are a thousand selves; and if one self breaks, another self is born!' \uD83E\uDDDA\uD83C\uDF31•"
                   },
-                  "filters": {
-                    "type": "object",
-                    "example": [
-                      {
-                        "name": "وضعیت کالا",
-                        "description": "فیلد دراپ داون تست",
-                        "slug": "test_slug3",
-                        "type": "radio",
-                        "options": ["نو", "کهنه", "تعمیری"],
-                        "required": true
-                      },
-                      {
-                        "name": "وضعیت کالا",
-                        "description": "فیلد دراپ داون تست",
-                        "slug": "test_slug4",
-                        "type": "selectbox",
-                        "options": ["نو", "کهنه", "تعمیری"],
-                        "required": true
-                      }
-                    ]
+                  "fullName": {
+                    "type": "string",
+                    "example": "Amin Ahmadi"
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "Amin_Ahmadi_123456"
+                  },
+                  "profile": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "@Amadi1565"
                   }
                 }
               }
@@ -182,14 +129,150 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Category created"
-          },
-          "400": {
-            "description": "one of the parameters is not valid"
-          },
+          "409": {"description": "username already exists."},
+          "400": {"description": "profile format is not valid"},
+          "422": {"description": "validation error"},
+          "200": {"description": "update user information successfully"},
+          "401": { "description": "user not authorized" }
+        }
+      }
+    },
+    "/api/v1/users/settings": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user settings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Private": {
+                    "type": "string",
+                    "enum": ["PUBLIC", "PRIVATE"],
+                    "default": "PUBLIC"
+                  },
+                  "ShowProfile": {
+                    "type": "string",
+                    "enum": ["ALL", "FOLLOWERS"],
+                    "default": "ALL"
+                  },
+                  "ShowStories": {
+                    "type": "string",
+                    "enum": ["ALL", "FOLLOWERS", "PRIVATE"],
+                    "default": "ALL"
+                  },
+                  "Comments": {
+                    "type": "string",
+                    "enum": ["ALL", "FOLLOWERS", "PRIVATE"],
+                    "default": "ALL"
+                  },
+                  "Messages": {
+                    "type": "string",
+                    "enum": ["ALL", "FOLLOWERS", "PRIVATE"],
+                    "default": "ALL"
+                  },
+                  "Uploads": {
+                    "type": "string",
+                    "enum": ["ALL", "FOLLOWERS", "PRIVATE"],
+                    "default": "PRIVATE"
+                  },
+                  "Playlists": {
+                    "type": "string",
+                    "enum": ["ALL", "FOLLOWERS", "PRIVATE"],
+                    "default": "FOLLOWERS"
+                  },
+                  "Analytics": {
+                    "type": "string",
+                    "enum": ["ALL", "FOLLOWERS", "PRIVATE"],
+                    "default": "PRIVATE"
+                  },
+                  "showMonetization": {
+                    "type": "string",
+                    "enum": ["ALL", "FOLLOWERS", "PRIVATE"],
+                    "default": "PRIVATE"
+                  },
+                  "Monetization": {
+                    "type": "string",
+                    "enum": ["ALL", "FOLLOWERS", "PRIVATE"],
+                    "default": "PRIVATE"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "404": {"description": "User not found."},
+          "422": {"description": "validation error"},
+          "200": {"description": "update user setting successfully"},
+          "401": { "description": "user not authorized" }
+        }
+      },
+      "get": {
+        "tags": ["Users"],
+        "summary": "get user settings",
+        "responses": {
+          "200": { "description": "get user setting successfully" },
+          "401": { "description": "user not authorized" }
+        }
+      }
+    },
+    "/api/v1/users/Me": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "i information",
+        "responses": {
+          "401": {"description": "User not authorized"},
+          "200": {"description": "get user all information successfully"}
+        }
+      }
+    },
+    "/api/v1/users/logout": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "logout from site",
+        "responses": {
+          "200": {"description": "user logout successfully"},
+          "401": { "description": "user not authorized" }
+        }
+      }
+    },
+    "/api/v1/users/remove-profile": {
+      "delete": {
+        "tags": ["Users"],
+        "summary": "remove profile",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "route": {
+                    "type": "string",
+                    "example": "/uploads/profiles/1762916332674-20250926_120011.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
           "401": {
-            "description": "Admin Token is not valid"
+            "description": "user not authorized"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "show user page",
+        "responses": {
+          "401": {
+            "description": "user not authorized"
           }
         }
       }

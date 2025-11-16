@@ -12,9 +12,11 @@ const idGuard = require('../../../middlewares/guard/id.guard')
 
 const uploader = multer({ storage: diskStorage("profiles"), limit: { fileSize: 10 * 1024 * 1024} })
 
-router.route('/').patch(uploader.single("profile"), validator.userValidator ,authGuard, controller.update)
+router.route('/').patch(authGuard, uploader.single("profile"), validator.userValidator, controller.update)
 
-router.route('/settings').patch(validator.userUpdateSetting, authGuard, controller.updateSettings).get(authGuard, controller.getSettings)
+router.route('/settings')
+    .patch(validator.userUpdateSetting, authGuard, controller.updateSettings)
+    .get(authGuard, controller.getSettings)
 
 router.route('/Me').get(authGuard, controller.getMe)
 

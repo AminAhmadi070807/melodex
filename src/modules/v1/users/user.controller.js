@@ -84,7 +84,6 @@ module.exports.getSettings = async (req, res, next) => {
     }
 }
 
-// TODO
 module.exports.getMe = async (req, res, next) => {
     try {
         const user = req.user
@@ -111,14 +110,13 @@ module.exports.logout = async (req, res, next) => {
 
         await refreshTokenModel.findOneAndDelete({ user: user._id }).lean()
 
-        return response(res, 200, "Logged out successfully")
+        return response(res, 200, "user logout successfully")
     }
     catch (error) {
         next(error)
     }
 }
 
-// TODO
 module.exports.getOne = async (req, res, next) => {
     try {
         const user = req.user
