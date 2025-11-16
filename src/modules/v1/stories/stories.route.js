@@ -16,6 +16,8 @@ router.use(authGuard)
 
 router.route('/').post(uploader.array('stories', 100), controller.upload)
 
-router.route('/:id').get(authGuard, idGuard, controller.getOne)
+router.route('/:id').get(idGuard, controller.getOne).delete(idGuard, controller.remove)
+
+router.route('/user/:id').get(idGuard, controller.userStories)
 
 module.exports = router;
