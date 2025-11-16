@@ -7,7 +7,6 @@ const { createPlanSchema, updatePlanSchema } = require('./../modules/v1/plans/pl
 const banSchema = require('../modules/v1/bans/ban.schema')
 const postSchema = require('../modules/v1/posts/post.schema')
 const { commentPostSchema } = require('../modules/v1/comments/comment.schema')
-const { uploadMp3MusicSchema } = require('../modules/v1/musics/music.schema')
 
 module.exports.authPhoneValidator = async (req, res, next) => {
     try {
