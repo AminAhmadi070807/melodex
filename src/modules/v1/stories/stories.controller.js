@@ -1,10 +1,9 @@
 "use strict"
 
 const storiesModel = require('./stories.model')
-
+const followModel = require("../follow/follow.model");
 const fileDeleter = require('../../../utils/delete.file.util')
 const response = require('../../../helpers/response.helper')
-const followModel = require("../follow/follow.model");
 const formatTimeAgo = require("../../../utils/time.util");
 
 module.exports.upload = async (req, res, next) => {
@@ -108,6 +107,29 @@ module.exports.remove = async (req, res, next) => {
         await fileDeleter('public', story.route)
 
         return response(res, 200, 'Deleted store successfully.')
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+module.exports.feedStories = async (req, res, next) => {
+    try {
+        const user = req.user;
+
+        const userFollower = await followModel.find({ following: user._id }, 'follower').populate("follower", 'username fullName profile').sort({ _id: -1 }).lean()
+
+        const userStoriesArray = []
+        for (const user of userFollower) {
+            const stories = await storiesModel.find({ user: user.follower._id }).populate("user", 'fullName username profile').sort({ createdAt: -1 }).lean()
+
+            userStoriesArray.push({
+                ...user.follower,
+                stories
+            })
+        }
+
+        return response(res, 200, null, {userStoriesArray})
     }
     catch (error) {
         next(error)
