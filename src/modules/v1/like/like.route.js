@@ -7,7 +7,8 @@ const controller = require("./like.controller");
 const authGuard = require("../../../middlewares/guard/auth.guard");
 const idGuard = require("../../../middlewares/guard/id.guard");
 
-router.route('/post/:id').post(authGuard, idGuard, controller.likePost).delete(authGuard, idGuard, controller.disLikePost);
-router.route('/music/:id').post(authGuard, idGuard, controller.likeMusic).delete(authGuard, idGuard, controller.disLikePost);
+router.route('/post/:id')
+    .post(authGuard, idGuard, controller.likePost)
+    .delete(authGuard, idGuard, controller.disLikePost);
 
 module.exports = router;
