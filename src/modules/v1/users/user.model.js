@@ -119,6 +119,7 @@ const schema = new mongoose.Schema({
         type: String,
         required: false,
         trim: true,
+        default: 'NULL',
     },
     profile: {
         type: [{
@@ -130,6 +131,7 @@ const schema = new mongoose.Schema({
         type: String,
         required: false,
         trim: true,
+        default: "NULL"
     },
     password: {
         type: String,
@@ -149,6 +151,7 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+        default: "NULL"
     }
 }, { timestamps: true });
 
