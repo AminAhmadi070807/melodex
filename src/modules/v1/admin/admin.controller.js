@@ -4,6 +4,8 @@ const userModel = require("../users/user.model");
 const postModel = require('../posts/post.model')
 const storyModel = require('../stories/stories.model')
 const commentModel = require('../comments/comment.model')
+const banModel = require('../bans/ban.model')
+const paymentModel = require('../payment/payment.model')
 const response = require("../../../helpers/response.helper");
 const pagination = require("../../../utils/pagination.util");
 const timeFormat = require("../../../utils/time.util");
@@ -54,6 +56,20 @@ module.exports.AllUsers = async (req, res, next) => {
 
         const users = await userModel.find({}, 'profile username fullName bio').sort({ _id: -1 }).limit(+page * +limit).lean()
         const counts = await userModel.countDocuments({})
+
+        return response(res, 200, null, { users, pagination: pagination(+page, +limit, counts) })
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+module.exports.AllBans = async (req, res, next) => {
+    try {
+        const { page = 1, limit = 10 } = req.query;
+
+        const users = await banModel.find({}, 'profile username fullName phone').sort({ _id: -1 }).limit(+page * +limit).lean()
+        const counts = await banModel.countDocuments({})
 
         return response(res, 200, null, { users, pagination: pagination(+page, +limit, counts) })
     }
@@ -121,6 +137,22 @@ module.exports.updateRole = async (req, res, next) => {
         if (!user) return response(res, 404, "User with phone number not found.")
 
         return response(res, 200, "Update user role successfully.")
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+module.exports.AllPayments = async (req, res, next) => {
+    try {
+        const { page = 1, limit = 50 } = req.query;
+
+        let payments = await paymentModel.find({}, 'price createdAt updatedAt').limit(+page * +limit).sort({ _id: -1 }).lean()
+        const counts = await paymentModel.countDocuments({})
+
+        payments = await timeFormatSetter(payments)
+
+        return response(res, 200, null, { payments, pagination: pagination(+page, +limit, counts) })
     }
     catch (error) {
         next(error)

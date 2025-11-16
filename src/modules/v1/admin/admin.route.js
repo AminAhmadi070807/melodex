@@ -11,9 +11,11 @@ router.use(authGuard, roleGuard(["ADMIN"]))
 
 router.get('/', controller.AllAdmins)
 router.route('/users').get(controller.AllUsers)
+router.route('/bans').get(controller.AllBans)
 router.route('/posts').get(controller.AllPosts)
 router.route('/comments').get(controller.AllComments)
 router.get('/stories', controller.AllStories)
+router.get('/payments', controller.AllPayments)
 
 router.route('/role').patch(validator.updateRoleValidator, controller.updateRole)
 
