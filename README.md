@@ -30,7 +30,7 @@
               Node.Js
           </td>
           <td align="center" width="100">
-              <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/682dfeae-38c6-4121-9fa8-b40d269a7ab6" />
+              <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/a11203d7-6793-46df-9745-c1c92d979eda" />
               Express.Js
           </td>
           <td align="center" width="100">
