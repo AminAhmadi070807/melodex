@@ -11,6 +11,6 @@ module.exports.banned = Joi.object().keys({
 
 module.exports.pagination = Joi.object().keys({
     page: Joi.number().integer().optional(),
-    limit: Joi.number().valid(10, 25, 50, 75, 100).integer().optional(),
+    limit: Joi.number().integer().optional(),
     expire: Joi.string().valid("Block", "Timeout").optional(),
 })

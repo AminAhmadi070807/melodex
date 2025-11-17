@@ -71,7 +71,7 @@ module.exports.update = async (req, res, next) => {
             ...req.body
         }, { new: true })
 
-        return response(res, 200, "Updated new plan successfully", plan)
+        return response(res, 200, "Updated plan successfully", plan)
     }
     catch (error) {
         next(error)

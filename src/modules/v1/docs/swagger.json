@@ -270,9 +270,830 @@
       "get": {
         "tags": ["Users"],
         "summary": "show user page",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "user id",
+          "schema": {
+            "type": "string"
+          }
+        }],
         "responses": {
+          "401": {"description": "user not authorized"},
+          "422": {"description": "id is not correct"},
+          "404": {"description": "user not found"},
+          "200": {"description": "getting user information successfully"}
+        }
+      }
+    },
+    "/api/v1/plans/": {
+      "post": {
+        "tags": ["Plans"],
+        "summary": "create new plan",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "durationMonths": {
+                    "type": "number",
+                    "example": 1,
+                    "default": 1
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 1070000,
+                    "default": 1070000
+                  },
+                  "members": {
+                    "type": "number",
+                    "example": 6,
+                    "default": 6
+                  },
+                  "plan": {
+                    "type": "string",
+                    "example": "PREMIUM DUO"
+                  },
+                  "discount": {
+                    "type": "number",
+                    "example": 0,
+                    "minimum": 0,
+                    "maximum": 100
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "create new plan successfully" },
+          "422": {"description": "validation error" },
+          "401": {"description": "user not authorized"},
+          "403": {"description": "this api is protected"}
+        }
+      },
+      "get": {
+        "tags": ["Plans"],
+        "summary": "getting all plans",
+        "responses": {
+          "200": {"description": "getting all plans"}
+        }
+      }
+    },
+    "/api/v1/plans/{id}": {
+      "get": {
+        "tags": ["Plans"],
+        "summary": "getting plan information successfully",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "plan id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "422": {"description": "id is not correct"},
+          "401": {"description": "user not authorized"},
+          "200": {"description": "getting plan information successfully"}
+        }
+      },
+      "patch": {
+        "tags": ["Plans"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "durationMonths": {
+                    "type": "number",
+                    "example": 1,
+                    "default": 1
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 1070000,
+                    "default": 1070000
+                  },
+                  "members": {
+                    "type": "number",
+                    "example": 6,
+                    "default": 6
+                  },
+                  "plan": {
+                    "type": "string",
+                    "example": "PREMIUM DUO"
+                  },
+                  "discount": {
+                    "type": "number",
+                    "example": 0,
+                    "minimum": 0,
+                    "maximum": 100
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "plan id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "summary": "update plan information",
+        "responses": {
+          "422": {"description": "validation error"},
+          "403": {"description": "This api is protected"},
+          "401": {"description": "user not authorized"},
+          "200": {
+            "description": "update plan successfully"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Plans"],
+        "summary": "remove plan",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "planId": {
+                    "type": "string",
+                    "default": "691156546d60a88771431630"
+                  },
+                  "id": {
+                    "type": "string",
+                    "example": "691156546d60a88771431630"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "remove plan successfully" },
+          "401": { "description": "user not authorized" },
+          "422": { "description": "id is not correct" }
+        }
+      }
+    },
+    "/api/v1/payments/plan/{id}": {
+      "post": {
+        "tags": ["Payment"],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "plan id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": {"description": "user not authorized"},
+          "422": {"description": "plan id is not correct"},
+          "404": {"description": "plan not found"},
+          "400": {"description": "problem in zarinpal service"},
+          "200": { "description": "create authority successfully" }
+        }
+      }
+    },
+    "/api/v1/payments/plan/verify": {
+      "get": {
+        "tags": ["Payment"],
+        "responses": {
+          "402": {"description": "Payment field"},
+          "404": {"description": "payment not found"},
+          "400": {"description": "problem in payment"},
+          "200": { "description": "payment successfully" }
+        }
+      }
+    },
+    "/api/v1/bans/": {
+      "post": {
+        "tags": ["Bans"],
+        "summary": "user banned",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "minLength": 11,
+                    "maxLength": 11
+                  },
+                  "expire": {
+                    "type": "string",
+                    "enum": ["Timeout", "Block"],
+                    "default": "Timeout"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "user banned successfully" },
           "401": {
             "description": "user not authorized"
+          },
+          "403": {
+            "description": "this api is protected"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Bans"],
+        "summary": "get user ban list",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "expire",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "422": { "description": "validation query error" },
+          "200": { "description": "get list user banned" },
+          "401": {
+            "description": "user not authorized"
+          },
+          "403": {
+            "description": "this api is protected"
+          }
+        }
+      }
+    },
+    "/api/v1/bans/{id}": {
+      "get": {
+        "tags": ["Bans"],
+        "summary": "get user with id from list",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "ban id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": { "description": "get user from ban list" },
+          "401": {
+            "description": "user not authorized"
+          },
+          "403": {
+            "description": "this api is protected"
+          },
+          "422": {
+            "description": "ban id is not correct"
+          },
+          "404": {
+            "description": "user with id not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Bans"],
+        "summary": "deleted user from list",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "ban id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": { "description": "User successfully removed from list" },
+          "401": {
+            "description": "user not authorized"
+          },
+          "403": {
+            "description": "this api is protected"
+          },
+          "422": {
+            "description": "ban id is not correct"
+          },
+          "404": {
+            "description": "user with id not found"
+          }
+        }
+      }
+    },
+    "/api/v1/admins/": {
+      "get": {
+        "tags": ["Admins"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "get all admins" },
+          "401": { "description": "user not authorized" },
+          "403": { "description": "this api is protected" }
+        }
+      }
+    },
+    "/api/v1/admins/bans": {
+      "get": {
+        "tags": ["Admins"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "get all user ban list" },
+          "401": { "description": "user not authorized" },
+          "403": { "description": "this api is protected" }
+        }
+      }
+    },
+    "/api/v1/admins/comments": {
+      "get": {
+        "tags": ["Admins"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "get all comments post" },
+          "401": { "description": "user not authorized" },
+          "403": { "description": "this api is protected" }
+        }
+      }
+    },
+    "/api/v1/admins/payments": {
+      "get": {
+        "tags": ["Admins"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "get all payments" },
+          "401": { "description": "user not authorized" },
+          "403": { "description": "this api is protected" }
+        }
+      }
+    },
+    "/api/v1/admins/posts": {
+      "get": {
+        "tags": ["Admins"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "get all posts" },
+          "401": { "description": "user not authorized" },
+          "403": { "description": "this api is protected" }
+        }
+      }
+    },
+    "/api/v1/admins/stories": {
+      "get": {
+        "tags": ["Admins"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "get all stories" },
+          "401": { "description": "user not authorized" },
+          "403": { "description": "this api is protected" }
+        }
+      }
+    },
+    "/api/v1/admins/users": {
+      "get": {
+        "tags": ["Admins"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "get all users list" },
+          "401": { "description": "user not authorized" },
+          "403": { "description": "this api is protected" }
+        }
+      }
+    },
+    "/api/v1/admins/role": {
+      "patch": {
+        "tags": ["Admins"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "minLength": 11,
+                    "maxLength": 11
+                  },
+                  "level": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 8
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "user role successfully updated" },
+          "422": { "description": "validation error" },
+          "404": { "description": "user not found" },
+          "401": { "description": "user not authorized" },
+          "403": { "description": "this api is protected" }
+        }
+      }
+    },
+    "/api/v1/follows/{id}": {
+      "post": {
+        "tags": ["Follows"],
+        "summary": "follow user",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "user id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": { "description": "user not authorized" },
+          "404": { "description": "user not found" },
+          "422": { "description": "user id is not correct" },
+          "409": { "description": "You had already followed" },
+          "201": { "description": "You followed successfully" }
+        }
+      },
+      "delete": {
+        "tags": ["Follows"],
+        "summary": "unFollow user",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "user id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": { "description": "user not authorized" },
+          "404": { "description": "you dont followed" },
+          "422": { "description": "user id is not correct" },
+          "200": { "description": "unFollowed user successfully" }
+        }
+      }
+    },
+    "/api/v1/posts/": {
+      "post": {
+        "tags": ["Posts"],
+        "summary": "upload new post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "allowComments": {
+                    "type": "string",
+                    "enum": ["ALL", "NONE", "FOLLOWERS", "PRIVATE"]
+                  },
+                  "disableLike": {
+                    "type": "boolean"
+                  },
+                  "isPrivate": {
+                    "type": "string",
+                    "enum": ["ALL", "NONE", "FOLLOWERS", "PRIVATE"]
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "posts": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {"description": "user not authorized"},
+          "422": {"description": "validation error"},
+          "400": {"description": "First upload post"},
+          "201": {"description": "upload post successfully"}
+        }
+      },
+      "get": {
+        "tags": ["Posts"],
+        "summary": "explore",
+        "responses": {
+          "200": {"description": "getting explore post successfully"},
+          "401": {"description": "user not authorized" }
+        }
+      }
+    },
+    "/api/v1/posts/reels": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "reels posts",
+        "responses": {
+          "401": {"description": "user not authorized" },
+          "200": {"description": "getting reels post successfully"}
+        }
+      }
+    },
+    "/api/v1/posts/{id}": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "get a post with id",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "post id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": { "description": "user not authorized" },
+          "404": { "description": "post not found or has already been removed" },
+          "200": { "description": "get post successfully" }
+        }
+      },
+      "delete": {
+        "tags": ["Posts"],
+        "summary": "remove a post with id",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "post id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": { "description": "user not authorized" },
+          "404": { "description": "post not found or has already been removed" },
+          "200": { "description": "post successfully removed" }
+        }
+      },
+      "patch": {
+        "tags": ["Posts"],
+        "summary": "remove a post with id",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "post id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "allowComments": {
+                    "type": "string",
+                    "enum": ["ALL", "NONE", "FOLLOWERS", "PRIVATE"]
+                  },
+                  "disableLike": {
+                    "type": "boolean"
+                  },
+                  "isPrivate": {
+                    "type": "string",
+                    "enum": ["ALL", "NONE", "FOLLOWERS", "PRIVATE"]
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "posts": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": { "description": "user not authorized" },
+          "404": { "description": "post not found or has already been removed" },
+          "200": { "description": "post successfully removed" }
+        }
+      }
+    },
+    "/api/v1/likes/post/{id}": {
+      "post": {
+        "tags": ["Likes"],
+        "summary": "like post",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "post id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": {"description": "user not authorized"},
+          "404": {
+            "description": "post not found"
+          },
+          "200": {
+            "description": "post successfully liked"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Likes"],
+        "summary": "dislike post",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "post id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": {"description": "user not authorized"},
+          "404": {
+            "description": "post not found"
+          },
+          "200": {
+            "description": "post successfully disliked"
           }
         }
       }

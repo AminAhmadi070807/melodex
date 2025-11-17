@@ -22,7 +22,7 @@ module.exports.upload = async (req, res, next) => {
             for (const file of files) posts.push(`/uploads/posts/${file.filename}`);
         }
 
-        if (posts.length === 0) return response(res, 422, "place first upload a post")
+        if (posts.length === 0) return response(res, 400, "place first upload a post")
 
         req.body.tags = req.body.tags.match(/#([\p{L}\p{N}_]+)/gu)
 
@@ -179,7 +179,6 @@ module.exports.explore = async (req, res, next) => {
         const explore = postArray.sort((a, b) => a.totalCount > b.totalCount ? -1 : 1)
 
         return response(res, 200, null, {  explore })
-
     }
     catch (error) {
         next(error);

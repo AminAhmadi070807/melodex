@@ -5,8 +5,6 @@ const axios = require('axios')
 
 module.exports.payment = async (price, description) => {
     try {
-        console.log(price, description)
-
         const response = await axios.post(configs.zarinpal.baseUrl + "request.json", {
             merchant_id: configs.zarinpal.merchant_id,
             callback_url: configs.zarinpal.callbackUrl,
@@ -17,7 +15,7 @@ module.exports.payment = async (price, description) => {
 
         const data = response.data.data;
 
-        return data.code === 100 ? { status: 200, authority: data.authority, redirect: configs.zarinpal.callbackBaseUrl + data.authority } : { status: 200, error: response.data.errors };
+        return data.code === 100 ? { status: 200, authority: data.authority, redirect: configs.zarinpal.callbackBaseUrl + data.authority } : { status: 400, error: response.data.errors };
     }
     catch (error) {
         return { status: error.status || 500, error: error.message || "OoOps Unknown server error" }
