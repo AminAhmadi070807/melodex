@@ -16,7 +16,9 @@ router.use(authGuard)
 
 router.route('/').post(uploader.array('stories', 100), controller.upload)
 
-router.route('/:id').get(idGuard, controller.getOne).delete(idGuard, controller.remove)
+router.route('/:id')
+    .get(idGuard, controller.getOne)
+    .delete(idGuard, controller.remove)
 
 router.route('/user/feed').get(controller.feedStories)
 

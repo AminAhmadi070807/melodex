@@ -1097,6 +1097,275 @@
           }
         }
       }
+    },
+    "/api/v1/comments/post": {
+      "post": {
+        "tags": ["Comments"],
+        "summary": "comment to post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": { "description": "user not authorized" },
+          "201": { "description": "comment post successfully" },
+          "400": { "description": "post id is not correct" },
+          "422": { "description": "validation error" },
+          "404": {"description": "post not found"}
+        }
+      }
+    },
+    "/api/v1/comments/post/answer/{id}": {
+      "post": {
+        "tags": ["Comments"],
+        "summary": "answer to comment",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "comment id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": { "description": "user not authorized" },
+          "201": { "description": "comment post successfully" },
+          "400": { "description": "post id is not correct" },
+          "422": { "description": "validation error" },
+          "404": {"description": "post not found"}
+        }
+      }
+    },
+    "/api/v1/comments/post/all/comments/{id}": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "post all comments",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "post id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": { "description": "user not authorized" },
+          "422": { "description": "id is not correct" },
+          "200": { "description": "Get all post comments" }
+        }
+      }
+    },
+    "/api/v1/comments/post/all/answer/{id}": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "post all comments",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "comment id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": { "description": "user not authorized" },
+          "422": { "description": "id is not correct" },
+          "200": { "description": "Get all post comments" }
+        }
+      }
+    },
+    "/api/v1/comments/post/{id}": {
+      "delete": {
+        "tags": ["Comments"],
+        "summary": "post all comments",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "comment id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": { "description": "user not authorized" },
+          "422": { "description": "id is not correct" },
+          "200": { "description": "Get all post comments" }
+        }
+      }
+    },
+    "/api/v1/bookmarks/post": {
+      "get": {
+        "tags": ["Bookmarks"],
+        "summary": "number of post bookmarked",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {"description": "user not authorized"}
+        }
+      }
+    },
+    "/api/v1/bookmarks/post/{id}": {
+      "post": {
+        "tags": ["Bookmarks"],
+        "summary": "post bookmarked successfully",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": {"description": "user not authorized"},
+          "404": {"description": "post not found"},
+          "200": {"description": "post removed from user's bookmark"},
+          "201": {"description": "post successfully bookmarked"}
+        }
+      }
+    },
+    "/api/v1/stories": {
+      "post": {
+        "tags": ["Stories"],
+        "summary": "upload new story",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "stories": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {"description": "user not authorized"},
+          "422": {"description": "validation error"},
+          "201": {"description": "upload story successfully"}
+        }
+      }
+    },
+    "/api/v1/stories/{id}": {
+      "get": {
+        "tags": ["Stories"],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "story id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": {"description": "user not authorized"},
+          "404": {"description": "story not found. or has already been deleted"},
+          "403": {"description": "this api is private"},
+          "422": {"description": "story id is not correct"},
+          "200": {"description": "successfully received story information"}
+        }
+      },
+      "delete": {
+        "tags": ["Stories"],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "story id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": {"description": "user not authorized"},
+          "422": {"description": "story id is not correct"},
+          "404": {"description": "story not found. or has already been deleted"},
+          "200": {"description": "story successfully deleted."}
+        }
+      }
+    },
+    "/api/v1/stories/user/feed": {
+      "get": {
+        "tags": ["Stories"],
+        "responses": {
+          "401": {"description": "user not authorized"},
+          "200": {"description": "get everyone who posted story"}
+        }
+      }
+    },
+    "/api/v1/stories/user/{id}": {
+      "get": {
+        "tags": ["Stories"],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "user id",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "401": {"description": "user not authorized"},
+          "422": {"description": "story id is not correct"},
+          "200": {"description": "get everyone user story successfully"}
+        }
+      }
     }
   }
 }

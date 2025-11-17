@@ -43,14 +43,10 @@ module.exports.getOne = async (req, res, next) => {
         if (timeAgo.updatedAt === "24 hours ago") {
             const removeStorey = await storiesModel.findByIdAndDelete(id).lean()
             if (removeStorey) await fileDeleter('public', removeStorey.route)
-            return response(res, 404, null, [])
+            return response(res, 404, "Story has already been deleted")
         }
 
-        await storiesModel.findByIdAndUpdate(id, {
-            $addToSet: {
-                viewer: user._id
-            }
-        })
+        await storiesModel.findByIdAndUpdate(id, {$addToSet: {viewer: user._id }})
 
         if (story.user._id.toString() !== user._id.toString()) {
             return response(res, 200, null, {

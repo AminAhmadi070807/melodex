@@ -27,9 +27,9 @@ module.exports.commentPost = async (req, res, next) => {
         const user = req.user;
         const { id, content } = req.body;
 
-        if (!isValidObjectId(post)) return response(res, 422, "id is not correct")
+        if (!isValidObjectId(id)) return response(res, 400, "id is not correct")
 
-        const isAvailablePost = await postModel.findById(post).lean()
+        const isAvailablePost = await postModel.findById(id).lean()
 
         if (!isAvailablePost) return response(res, 404, "post not found. or has already been removed")
 
@@ -48,7 +48,7 @@ module.exports.commentPost = async (req, res, next) => {
         await commentPostModel.create({
             user: user._id,
             content,
-            post,
+            post: id,
         })
 
         return response(res, 201, "created new comment to post successfully.")

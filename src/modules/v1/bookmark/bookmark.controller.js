@@ -55,7 +55,7 @@ module.exports.bookmarkPost = async (req, res, next) => {
             user: user._id
         })
 
-        return response(res, 200, "post bookmarked successfully")
+        return response(res, 201, "post bookmarked successfully")
     }
     catch (error) {
         next(error)
