@@ -131,19 +131,14 @@ http://localhost:3000/api/docs
             <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/56225a07-ae43-490e-af73-14460ec1ca51" />
             MongoDB
           </td>
+          <td align="center" width="100">
+            <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/be5f4530-8924-462d-b9d8-ae74b995ae93" />
+            SMS
+          </td>
+          <td align="center" width="100">
+            <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/3567a91d-0453-4d5b-9674-5d7f6d966212" />
+            Payment
+          </td>
         </tr>
     </table>
-</div>
-<div>
-    <h2>
-      <img width="30" height="30" alt="image" src="https://github.com/user-attachments/assets/676bb3e9-7726-43a7-ad14-f5feaab7a821" />
-      Roadmap 
-    </h2>
-    <ol>
-    <li>Notification</li>
-    <li>Search</li>
-    <li>Messages</li>
-    <li>Live</li>
-    <li>more...</li>
-  </ol>
 </div>
